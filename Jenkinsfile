@@ -36,7 +36,7 @@ pipeline {
                     node_modules/.bin/serve -s build &
                     sleep 10
                     npx playwright --version
-                    npx playwright test
+                    npx playwright test --reporter=html
                 '''
             }
         }

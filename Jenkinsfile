@@ -76,13 +76,15 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Stage' ) {
+        
+        stage('STAGE Deploy') {
             agent {
                 docker {
-                    image 'node:18'
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
                     npm install netlify-cli node-jq
@@ -90,27 +92,8 @@ pipeline {
                     echo "Deploying to Netlify site id $NETLIFY_SITE_ID ..."
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
-                '''
-                script {
-                    env.STAGE_URL = sh(script: 'node_modules/.bin/node-jq -r \'.deploy_url\' deploy-output.json', returnStdout: true)
-                }
-            }
-            
-        }
-        stage('STAGE E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                }
-            }
-            environment {
-                CI_ENVIRONMENT_URL = "${env.STAGE_URL}"
-            }
-
-            steps {
-                sh '''
+                    CI_ENVIRONMENT_URL = $(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)   
+                    echo "Deployed to $CI_ENVIRONMENT_URL"
                     npx playwright test  --reporter=html
                 '''
             }

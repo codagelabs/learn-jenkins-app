@@ -93,6 +93,13 @@ pipeline {
                 '''
             }
         }
+        stage('Approve Deployment') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    input message: 'Ready to Deploy ?', ok: 'Yes, I am sure I want to deploy!'
+                }
+            }
+        }
 
         stage('Deploy Prod') {
             agent {

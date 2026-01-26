@@ -8,8 +8,13 @@ pipeline {
     }
     
     stages {
+        stage('Dockr build') {
+            steps {
+                sh 'docker build -t my-playwright-app .'
+            }
+        }
 
-        stage('Build') {
+        stage('Docker Build') {
             agent {
                 docker {
                     image 'node:18-alpine'

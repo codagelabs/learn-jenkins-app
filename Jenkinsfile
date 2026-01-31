@@ -23,8 +23,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        echo "Hello World" > text.txt
-                        aws s3 cp text.txt s3://$AWS_BUCKET/text.txt --region ap-south-1 
+                        echo "Hello World" > index.html
+                        aws s3 cp index.html s3://$AWS_BUCKET/index.html --region ap-south-1 
                     '''
                 }
             }

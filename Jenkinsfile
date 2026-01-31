@@ -16,12 +16,15 @@ pipeline {
                     args '--entrypoint=""'
                 }
             }
+            environment {
+                AWS_BUCKET = 'learn-jenkins-app-2026'
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
                         echo "Hello World" > text.txt
-                        aws s3 cp text.txt s3://learn-jenkins-app-2026/text.txt
+                        aws s3 cp text.txt s3://$AWS_BUCKET/text.txt --region ap-south-1 
                     '''
                 }
             }

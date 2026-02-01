@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         REACT_APP_VERSION = "1.2.$BUILD_ID"
+        AWS_REGION = "us-east-1"
     }
     
     stages {
@@ -19,7 +20,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws ecs register-task-definition --cli-input-json file://aws/task-definatio-prod.json
+                        aws ecs register-task-definition --cli-input-json file://aws/task-definatio-prod.json --region $AWS_REGION          
                     '''
                 }
             }

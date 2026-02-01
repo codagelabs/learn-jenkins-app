@@ -43,8 +43,6 @@ pipeline {
             }
             steps {
                 sh '''
-                    amazon-linux-extras install docker -y
-                    
                     docker build -t myjenkinsapp .
                 '''
             }
@@ -65,7 +63,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        yum install jq -y
+
                         NEW_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --region $AWS_REGION | jq '.taskDefinition.revision')
                         echo $NEW_REVISION
                         aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEFINITION:$NEW_REVISION

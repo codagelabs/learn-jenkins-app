@@ -1,3 +1,7 @@
-FROM amazon/aws-cli
-RUN amazon-linux-extras install docker 
-RUN yum install -y jq           
+# Use official docker image to get the latest client binary
+FROM docker:cli AS docker-cli
+
+FROM amazon/aws-cli:latest
+# Copy the docker client binary from the official image
+COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/
+RUN yum install -y jq

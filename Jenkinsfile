@@ -26,7 +26,8 @@ pipeline {
                         yum install jq -y
                         NEW_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --region $AWS_REGION | jq '.taskDefinition.revision')
                         echo $NEW_REVISION
-                        aws ecs update-service --cluster lern-jenkins-app-kd9t13 --service LearnJemkinsApp-TaskDefination-Prod-service-m0nsrhfu --task-definition LearnJemkinsApp-TaskDefination-Prod:2
+                        aws ecs update-service --cluster lern-jenkins-app-kd9t13 --service LearnJemkinsApp-TaskDefination-Prod-service-m0nsrhfu --task-definition LearnJemkinsApp-TaskDefination-Prod:$NEW_REVISION
+                        aws ecs wait service-stable --cluster lern-jenkins-app-kd9t13 --service LearnJemkinsApp-TaskDefination-Prod-service-m0nsrhfu
                     '''
                 }
             }
